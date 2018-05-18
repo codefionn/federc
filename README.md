@@ -5,6 +5,6 @@
 
 Goals:
 
-    - Create a Feder compiler written in C.
+    - Create a Feder compiler written in Feder
 
     - Use a tri-color garbage collection for deleting objects
