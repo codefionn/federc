@@ -173,11 +173,17 @@ namespace compiler
             String errMsg
         ;
 
+        # Forward declaration
+        class SyntaxResult
+        ;
+
         class Instruction ErrorTrace
             bool isMain
             bool isGlobal
             int32[] tokenKeys
             String[] tokenValues
+
+            SyntaxResult result
 
             func init
                 tokenKeys = int32[0]
@@ -207,6 +213,8 @@ namespace compiler
             # STE_TYPE_INSTRUCTION
             ##
             int32[] parts_types
+
+            SyntaxResult result
 
             func init
                 parts = object[0]
@@ -554,6 +562,126 @@ namespace compiler
                         simplify(SyntaxTreeBranch from master.parts[i])
                     ;
                 ;
+            ;
+        ;
+
+        ##
+        # SYMBOLS: SYMBOL TYPES
+        # SyntaxSymbol.symbType
+        ##
+
+        global SYMB_TYPE_NONE       = 0x0000
+        global SYMB_TYPE_CLASS      = 0x0001
+        global SYMB_TYPE_TYPE       = 0x0002
+        global SYMB_TYPE_NAMESPACE  = 0x0004
+        global SYMB_TYPE_FUNCTION   = 0x0008
+        global SYMB_TYPE_INTERFACE  = 0x0010
+        global SYMB_TYPE_FILE       = 0x0020
+
+        ##
+        # A symbol containg 'SYMB_TYPE_OBJECT' must
+        # also contain 'SYMB_TYPE_CLASS', 'SYMB_TYPE_TYPE'
+        # or 'SYMB_TYPE_INTERFACE'
+        ##
+        global SYMB_TYPE_OBJECT     = 0x0040
+
+        ##
+        # A symbol type containing 'SYMB_TYPE_VARIABLE'
+        # must also contain 'SYMB_TYPE_OBJECT'
+        ##
+        global SYMB_TYPE_VARIABLE   = 0x0080
+
+        ##
+        # SYMBOLS: SYMBOL INFO(RMATION)
+        # SyntaxSymbol.symbInfo
+        #
+        # Information symbols can be used for
+        # - optimization
+        # - TODO
+        ##
+
+        global SYMB_INFO_NONE           = 0x0000
+        global SYMB_INFO_OBJ_ASSIGNED   = 0x0001
+        global SYMB_INFO_OBJ_DYNAMIC    = 0x0002
+
+
+        class SyntaxSymbol
+            ##
+            # The type of the symbol (class, primitive datatype,
+            # structure, namespace, object, ...)
+            ##
+            int32 symbType
+            int32 symbInfo
+
+            ##
+            # Can be null
+            # (though that's only the case when symbType == SYMB_TYPE_FILE)
+            ##
+            SyntaxSymbol parent
+
+            ##
+            # All children of the symbol
+            ##
+            SyntaxSymbol[] children
+
+            ##
+            # Optional symbol
+            # Used as "parent" when symbType == SYMB_TYPE_CLASS
+            # Used as an object's type (if symbType & SYMB_TYPE_OBJECT != 0)
+            ##
+            SyntaxSymbol optSymb
+
+            ##
+            # The name of the symbol. Can be null.
+            ##
+            String name
+
+            func init
+                symbType = SYMB_TYPE_NONE
+                symbInfo = SYMB_INFO_NONE
+                child = SyntaxSymbol[0]
+            ;
+
+            ##
+            # @param parent
+            # @param objType Can be null
+            # @param name
+            # Create a symbol, which represents an object
+            ##
+            bool func createObject(SyntaxSymbol parent,
+                                   SyntaxSymbol objType, String name)
+                symbType = SYMB_TYPE_OBJECT
+            ;
+
+            ##
+            # @return Returns false, if 'symb' can't be added to 'this'
+            # symbol
+            ##
+            bool func addChild(SyntaxSymbol symb)
+                if symbType & SYMB_TYPE_OBJECT != 0
+                    # Can't add a child
+                    return false
+                ;
+
+                # Check if symb was already added to children
+                for int32 i = 0, i < len(children), i++
+                    if children == symb
+                        return false
+                    ;
+                ;
+
+                # Add symbol to children array
+                append(children, symb)
+
+                return true
+            ;
+        ;
+
+        class SyntaxResult
+            SyntaxSymbol[] symbols
+
+            func init
+                symbols = SyntaxSymbol[0]
             ;
         ;
     ;
