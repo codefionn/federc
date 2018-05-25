@@ -583,7 +583,7 @@ namespace compiler
         # also contain 'SYMB_TYPE_CLASS', 'SYMB_TYPE_TYPE'
         # or 'SYMB_TYPE_INTERFACE'
         ##
-        global SYMB_TYPE_OBJECT     = 0x0040
+        global int32 SYMB_TYPE_OBJECT     = 0x0040
 
         ##
         # A symbol type containing 'SYMB_TYPE_VARIABLE'
@@ -658,14 +658,14 @@ namespace compiler
             # symbol
             ##
             bool func addChild(SyntaxSymbol symb)
-                if symbType & SYMB_TYPE_OBJECT != 0
+                if (symbType & SYMB_TYPE_OBJECT) != 0
                     # Can't add a child
                     return false
                 ;
 
                 # Check if symb was already added to children
                 for int32 i = 0, i < len(children), i++
-                    if children == symb
+                    if children[i] == symb
                         return false
                     ;
                 ;
