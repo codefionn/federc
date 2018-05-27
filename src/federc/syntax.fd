@@ -682,7 +682,7 @@ namespace compiler
                 stackSymbInfo[len(stackSymbInfo) - 1] = t
             ;
 
-            func popInfo(int32 t)
+            func pushInfo(int32 t)
                 append(stackSymbInfo, t)
             ;
 
