@@ -1,0 +1,56 @@
+\chapter{Language Specification}
+
+
+\section{Basic Definitions}
+
+\noindent newline -> LF|CRLF
+
+\noindent valBool -> "true"|"false"
+
+\noindent valInt -> [0-9]+|("0x" [0-9A-Fa-f])
+
+\noindent valDouble -> [0-9]*.[0-9]+
+
+\noindent file -> ([fileBody] ([newline] [fileBody])*)*
+
+%-------------------------------------------------------------------------------
+
+\section{Functions}
+
+\noindent function -> [type]\{0,1\} [space]+ "func" [space]+ [name] [space]* [declFuncArguments] [newline]+ [funcBody] ";"
+
+\noindent declFuncArguments -> ([space]* [declVar] [space]* ("," [space]* [declVar] [space]*)\{0,1\}
+
+\noindent funcBody -> ([instruction]|[returnInstruction]|[conditionalStatement])
+
+%-------------------------------------------------------------------------------
+
+\section{Classes}
+
+\noindent class -> "class" [name] [classCall]\{0,1\} [newline]+ [classBody] ";" [newline]+
+
+\noindent classBody -> (([declVar] [newline]+)|([function]))*
+
+%-------------------------------------------------------------------------------
+
+\section{Namespaces}
+
+\noindent namespace -> "namespace" [space]+ [name] [newline]+ [namespaceBody] ";" [newline]+
+
+\noindent namespaceBody -> ([namespace]|[function]|[class]|[instruction])*
+
+%-------------------------------------------------------------------------------
+
+\section{Instruction}
+
+\noindent instruction -> [declVar]|[defVar]|[funcCall]
+
+%-------------------------------------------------------------------------------
+
+\section{Conditional Statements}
+
+\noindent conditionalStatement -> ("if"|"for"|"else"|("else" [space]+ "if") [space]+ [newline]+ [boolInstruction] ";" [newline]*)|conditionalStatementFor
+
+\noindent conditinalStatementFor ->  "for" [space]+ ([defVar] ",")\{0,1\} [boolInstruction] [space]* "," [instruction] [newline]+ [bodyInstructions] ";" [newline]*
+
+\noindent boolInstruction -> [instruction:return\_type=bool]

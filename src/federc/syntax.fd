@@ -601,17 +601,25 @@ namespace compiler
         ##
 
         global SYMB_INFO_NONE           = 0x0000
+        # Object has been assigned before
         global SYMB_INFO_OBJ_ASSIGNED   = 0x0001
         global SYMB_INFO_OBJ_DYNAMIC    = 0x0002
-
+        global SYMB_INFO_VAR_DECL       = 0x0004
 
         class SyntaxSymbol
             ##
-            # The type of the symbol (class, primitive datatype,
-            # structure, namespace, object, ...)
+            # Containes previous states of symbType
+            # The first state (index = 0) is the current state
+            # Look at pop-/pushSymbType
             ##
-            int32 symbType
-            int32 symbInfo
+            int32[] stackSymbType
+
+            ##
+            # Containes previous states of symbInfo
+            # The first state (index = 0) is the current state
+            # Look at pop-/pushSymbInfo
+            ##
+            int32[] stackSymbInfo
 
             ##
             # Can be null
@@ -636,10 +644,68 @@ namespace compiler
             ##
             String name
 
+            ##
+            # Returns the type of the language
+            # (a bitmask created from type0 | type1)
+            # SYMB_TYPE* (wildcard)
+            ##
+            int32 func getType
+                return stackSymbType[len(stackSymbType) - 1]
+            ;
+
+            func setType(int32 t)
+                stackSymbType[len(stackSymbType) - 1] = t
+            ;
+
+            func pushType(int32 t)
+                append(stackSymbType, t)
+            ;
+
+            func popType(int32 t)
+                if len(stackSymbType) > 1
+                    return
+                ;
+
+                int32[] copy = int32[len(stackSymbType) - 1]
+                for i = 0, i < len(stackSymbType) - 1, i++
+                    copy[i] = stackSymbType[i]
+                ;
+
+                stackSymbType = copy
+            ;
+
+            int32 func getInfo
+                return stackSymbInfo[len(stackSymbInfo) - 1]
+            ;
+
+            func setInfo(int32 t)
+                stackSymbInfo[len(stackSymbInfo) - 1] = t
+            ;
+
+            func popInfo(int32 t)
+                append(stackSymbInfo, t)
+            ;
+
+            func popInfo(int32 t)
+                if len(stackSymbInfo) > 1
+                    return
+                ;
+
+                int32[] copy = int32[len(stackSymbInfo) - 1]
+                for i = 0, i < len(stackSymbInfo) - 1, i++
+                    copy[i] = stackSymbInfo[i]
+                ;
+
+                stackSymbInfo = copy
+            ;
+
             func init
-                symbType = SYMB_TYPE_NONE
-                symbInfo = SYMB_INFO_NONE
                 child = SyntaxSymbol[0]
+                stackSymbType = int32[1]
+                stackSymbInfo = int32[1]
+
+                setType(SYMB_TYPE_NONE)
+                setInfo(SYMB_INFO_NONE)
             ;
 
             ##
@@ -650,15 +716,14 @@ namespace compiler
             ##
             bool func createObject(SyntaxSymbol parent,
                                    SyntaxSymbol objType, String name)
-                symbType = SYMB_TYPE_OBJECT
+                setType(SYMB_TYPE_OBJECT)
             ;
 
             ##
-            # @return Returns false, if 'symb' can't be added to 'this'
-            # symbol
+            # @return Returns false, if 'symb' can't be added to 'this' symbol
             ##
             bool func addChild(SyntaxSymbol symb)
-                if (symbType & SYMB_TYPE_OBJECT) != 0
+                if (getType() & SYMB_TYPE_OBJECT) != 0
                     # Can't add a child
                     return false
                 ;
@@ -679,9 +744,29 @@ namespace compiler
 
         class SyntaxResult
             SyntaxSymbol[] symbols
+            int32 iStatements
 
             func init
                 symbols = SyntaxSymbol[0]
+                iStatements = 0
+            ;
+
+            ##
+            # @return Returns true, if the result could be in the
+            # brackets in a function declaration
+            ##
+            bool func isFuncDeclArgs
+                if len(symbols) != iStatements
+                    return false
+                ;
+
+                for int32 i = 0, i < len(symbols), i++
+                    if symbols[i].getInfo() & SYMB_INFO_VAR_DECL == 0
+                        return false
+                    ;
+                ;
+
+                return true
             ;
         ;
     ;
