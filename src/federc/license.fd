@@ -1,4 +1,4 @@
-##
+## 
 # federc/license.fd
 #-------------------------------------------------------------------------------
 # Copyright (c) 2018 Fionn Langhans
@@ -10,7 +10,7 @@
 # Permission is granted to anyone to use this software for any purpose,
 # including commercial applications, and to alter it and redistribute it freely,
 # subject to the following restrictions:
-# 
+#
 # 1. The origin of this software must not be misrepresented; you must not
 #    claim that you wrote the original software. If you use this software in a
 #    product, an acknowledgment in the product documentation would be
@@ -18,36 +18,16 @@
 #
 # 2. Altered source versions must be plainly marked as such, and must not be
 #    misrepresented as being the original software.
-# 
+#
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 ##
-
 include "stdio.fd"
-
 namespace compiler
-    namespace federc
-        func license
-            io.println("
-Copyright (C) 2018 Fionn Langhans\n
-\n
-This software is provided 'as-is', without any express or implied\n
-warranty.  In no event will the authors be held liable for any damages\n
-arising from the use of this software.\n
-\n
-Permission is granted to anyone to use this software for any purpose,\n
-including commercial applications, and to alter it and redistribute it\n
-freely, subject to the following restrictions:\n
-\n
-1. The origin of this software must not be misrepresented; you must not\n
-  claim that you wrote the original software. If you use this software\n
-  in a product, an acknowledgment in the product documentation would be\n
-  appreciated but is not required.\n
-2. Altered source versions must be plainly marked as such, and must not be\n
-  misrepresented as being the original software.\n
-3. This notice may not be removed or altered from any source distribution.\n
-\n
-Fionn Langhans, fionn.langhans@gmail.com")
-        ;
+  namespace federc
+    func license
+      io.println(
+        "Copyright (C) 2018 Fionn Langhans\n\nThis software is provided 'as-is', without any express or implied\nwarranty.  In no event will the authors be held liable for any damages\narising from the use of this software.\n\nPermission is granted to anyone to use this software for any purpose,\nincluding commercial applications, and to alter it and redistribute it\nfreely, subject to the following restrictions:\n\n1. The origin of this software must not be misrepresented; you must not\n  claim that you wrote the original software. If you use this software\n  in a product, an acknowledgment in the product documentation would be\n  appreciated but is not required.\n2. Altered source versions must be plainly marked as such, and must not be\n  misrepresented as being the original software.\n3. This notice may not be removed or altered from any source distribution.\n\nFionn Langhans, fionn.langhans@gmail.com")
     ;
+  ;
 ;

@@ -1,0 +1,3 @@
+# A small program which prints "Hello, world!"
+include "stdio.fd"
+io.println("Hello, world!")
