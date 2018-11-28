@@ -171,7 +171,7 @@ namespace compiler
           else if isEqual(args[i], "-tab")
             flag = FLAG_TAB
           else if isEqual(args[i], "-stdout")
-            writeToStdout = !writeToStdout
+            writeToStdout = (!writeToStdout)
           else
             compiler.help.err_unknown_option(args[0], args[i])
             return false
